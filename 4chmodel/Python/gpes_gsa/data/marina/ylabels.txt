@@ -1,0 +1,8 @@
+EDV
+EDP
+p_IVC
+p_max
+v_pmax
+ESV
+p_ejec
+EF

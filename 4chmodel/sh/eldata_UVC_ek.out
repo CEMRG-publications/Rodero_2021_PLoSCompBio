@@ -1,0 +1,42 @@
+Data read:
+ - Points:     358392
+ - Elements:   1639802
+ - Time steps: 1
+
+Writing timestep: 1 of 1
+
+Mesh I/O Statistics:
+
+Read times (txt format mesh):
+ - points:     0.35314 s
+ - elements:   1.25461 s
+ - fibres:         2.07660 s
+ - elem data:      0.66914 s
+
+Write times (bin vtk format):
+ - mesh :      0.22484 s
+ - fibres:         0.23546 s
+ - elem data:      0.08222 s
+This is case 
+135
+
+
+Reading points...
+
+Reading elements...
+
+Reading UVC...
+
+Reading vtx...
+
+Creating auxiliar variables...
+
+Creating UVC elementwise...
+
+Saving file...
+
+Creating penalty map...
+
+Saving file...
+
+DONE

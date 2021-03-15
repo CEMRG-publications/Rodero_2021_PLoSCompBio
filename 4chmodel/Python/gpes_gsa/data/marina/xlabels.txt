@@ -1,0 +1,7 @@
+q_mean
+Rsys
+Rpulm
+pao
+ppa
+pvc
+pvp
