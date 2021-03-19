@@ -46,6 +46,14 @@ Read_csv <- function(file, header = TRUE, sep = ",", quote = "\"",dec = ".",
 }
 
 
+#' @description The phase naming of CARP didn't seem to be correct (easy to 
+#' check by plotting the volume and pressure curves), so this functions is to
+#' correct that.
+#' 
+#' @param cav.vent Data frame from the output of the CARP simulations (cav.LV
+#' or cav.RV) to correct the phase.
+#' 
+#' @return The data frame with the phase naming corrected. 
 Correct_phase_name <- function(cav.vent){
     volume <- as.double(cav.vent$Volume)
     phase <- NA*volume
