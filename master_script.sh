@@ -5,7 +5,8 @@ clear
 current_case=""
 
 usage(){
-    echo "Script to extract the biventricular mesh from a healthy case. Ventricle tags are expected to be 1 and 2."
+    echo "Script to run the whole pipeline from the mapping to the fibres. Run
+    with extreme care."
     echo "Parameters:"
     echo "-c/--case: Case number with 2 digits."
     echo "-h/--help: Parameters usage."
