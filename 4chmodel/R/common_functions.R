@@ -35,7 +35,7 @@ Debug_message <- function(string,io,flag_debugging=TRUE){
 Read_csv <- function(file, header = TRUE, sep = ",", quote = "\"",dec = ".",
                      fill = TRUE, comment.char = "", flag_debugging = FALSE,
                      stringsAsFactors = default.stringsAsFactors()){
-  source("/home/crg17/Desktop/scripts/4chmodel/R/common_functions.R")
+  source("./common_functions.R")
   
   Debug_message(string = file,io = "r",flag_debugging = parent.frame()$flag_debugging)
   
@@ -45,6 +45,128 @@ Read_csv <- function(file, header = TRUE, sep = ",", quote = "\"",dec = ".",
   return(file_read)
 }
 
+#' @description Same as write.csv function with the Debug_message function
+#' added.
+#' 
+#' @param ... Same as the ones in write.csv
+#' @param flag_debugging If TRUE, prints whatever is writtig
+#' 
+Write_csv <- function(x, file = "", append = FALSE, quote = TRUE, sep = " ",
+                      eol = "\n", na = "NA", dec = ".", row.names = TRUE,
+                      col.names = TRUE, qmethod = c("escape", "double"),
+                      fileEncoding = "", flag_debugging = FALSE){
+  source("./common_functions.R")
+  
+  Debug_message(string = file,io = "w",
+                flag_debugging = parent.frame()$flag_debugging)
+  
+  write.csv(x = x, file = file, append = append, quote = quote, sep = sep,
+            eol = eol, na = na, dec = dec, row.names = row.names,
+            col.names = col.names, qmethod = qmethod,
+            fileEncoding = fileEncoding)
+}
+
+#' @description Same as write.table function with the Debug_message function
+#' added.
+#' 
+#' @param ... Same as the ones in write.table
+#' @param flag_debugging If TRUE, prints whatever is writtig
+#' 
+Write_table <- function(x, file = "", append = FALSE, quote = TRUE, sep = " ",
+                        eol = "\n", na = "NA", dec = ".", row.names = TRUE,
+                        col.names = TRUE, qmethod = c("escape", "double"),
+                        fileEncoding = "", flag_debugging = FALSE){
+  source("./common_functions.R")
+  
+  Debug_message(string = file,io = "w",
+                flag_debugging = parent.frame()$flag_debugging)
+  
+  write.table(x = x, file = file, append = append, quote = quote, sep = sep,
+            eol = eol, na = na, dec = dec, row.names = row.names,
+            col.names = col.names, qmethod = qmethod,
+            fileEncoding = fileEncoding)
+}
+
+#' @description Same as read.delim function with the Debug_message function
+#' added.
+#' 
+#' @param ... Same as the ones in read.delim
+#' @param flag_debugging If TRUE, prints whatever is reading.
+#' 
+#' @return The file read.
+Read_delim <- function(file, header = TRUE, sep = "\t", quote = "\"",
+                       dec = ".", fill = TRUE, comment.char = "",
+                       flag_debugging = FALSE){
+  source("./common_functions.R")
+  
+  Debug_message(string = file,io = "r",
+                flag_debugging = parent.frame()$flag_debugging)
+  
+  file_read <- read.delim(file = file, header = header, sep = sep,
+                          quote = quote, dec = dec, fill = fill,
+                          comment.char = comment.char)
+  return(file_read)
+}
+
+#' @description Same as read.csv2 function with the Debug_message function
+#' added.
+#' 
+#' @param ... Same as the ones in read.csv2
+#' @param flag_debugging If TRUE, prints whatever is reading.
+#' 
+#' @return The file read.
+Read_csv2 <- function(file, header = TRUE, sep = ";", quote = "\"",
+                      dec = ",", fill = TRUE, comment.char = "",
+                      flag_debugging = FALSE){
+  source("./common_functions.R")
+  
+  Debug_message(string = file,io = "r",
+                flag_debugging = parent.frame()$flag_debugging)
+  
+  file_read <- read.csv2(file = file, header = header, sep = sep,
+                          quote = quote, dec = dec, fill = fill,
+                          comment.char = comment.char)
+  return(file_read)
+}
+
+#' @description Same as read.table function with the Debug_message function
+#' added.
+#' 
+#' @param ... Same as the ones in read.csv2
+#' @param flag_debugging If TRUE, prints whatever is reading.
+#' 
+#' @return The file read.
+Read_table <- function(file, header = FALSE, sep = "", quote = "\"'", dec = ".",
+                       numerals = c("allow.loss", "warn.loss", "no.loss"),
+                       row.names, col.names, as.is = !stringsAsFactors,
+                       na.strings = "NA", colClasses = NA, nrows = -1,
+                       skip = 0, check.names = TRUE, fill = !blank.lines.skip,
+                       strip.white = FALSE, blank.lines.skip = TRUE,
+                       comment.char = "#",
+                       allowEscapes = FALSE, flush = FALSE,
+                       stringsAsFactors = default.stringsAsFactors(),
+                       fileEncoding = "", encoding = "unknown", text,
+                       skipNul = FALSE, flag_debugging = FALSE){
+  source("./common_functions.R")
+  
+  Debug_message(string = file,io = "r",
+                flag_debugging = parent.frame()$flag_debugging)
+  
+  file_read <- read.table(file = file, header = header, sep = sep,
+                          quote = quote, dec = dec, numerals = numerals,
+                          row.names = row.names, col.names = col.names,
+                          as.is = as.is, na.strings = na.strings,
+                          colClasses = colClasses, nrows = nrows, skip = skip,
+                          check.names = check.names, fill = fill,
+                          strip.white = strip.white,
+                          blank.lines.skip = blank.lines.skip,
+                          comment.char = comment.char,
+                          allowEscapes = allowEscapes, flush = flush,
+                          stringsAsFactors = stringsAsFactors,
+                          fileEncoding = fileEncoding, encoding = encoding,
+                          text = text, skipNul = skipNul)
+  return(file_read)
+}
 
 #' @description The phase naming of CARP didn't seem to be correct (easy to 
 #' check by plotting the volume and pressure curves), so this functions is to
