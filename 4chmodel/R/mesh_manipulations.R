@@ -1,11 +1,19 @@
+#' @description Function to visualise an AT0190 file for debugging purposes.
+#' 
+#' @param heart Number of the case analysed
+#' 
+#' @note Paths of the file are hardcoded.
+
 Visualise_AT1090 <- function(heart){
 
   warning("The elem file must be without the header and the activation file must be element-wise (use meshtool)")
   
-  aux <- read.table("~/Desktop/transfer/vm_act_seq_11HC.dat", quote="\"", comment.char="")
+  aux <- read.table("~/Desktop/transfer/vm_act_seq_11HC.dat", quote="\"",
+                    comment.char="")
   AT_12 <- as.vector(aux$V1)
   rm(aux)
-  aux <- read.table("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case11/meshing/1000um/BiV/BiV_mesh_volume.dat", quote="\"", comment.char="")
+  aux <- read.table("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case11/meshing/1000um/BiV/BiV_mesh_volume.dat",
+                    quote="\"", comment.char="")
   BiV_mesh_volume <- as.vector(aux$V1)
   
   # We sort the volumes according to the ones activated first
@@ -25,10 +33,11 @@ Visualise_AT1090 <- function(heart){
   
   final_vec <- accumul_vol[idx2unsort]
   
-  write.table(final_vec,"/home/crg17/Desktop/transfer/h11_percentages_AT.dat",row.names = FALSE,col.names = FALSE)
+  write.table(final_vec,"/home/crg17/Desktop/transfer/h11_percentages_AT.dat",
+              row.names = FALSE,col.names = FALSE)
 }
 
-
+#' @description Function deprecated.
 Map_thickness_transmurally <- function(case_number){
   
   require("svMisc")
@@ -71,6 +80,7 @@ Map_thickness_transmurally <- function(case_number){
   write.table(BiV_thickness,file = paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/HF_case",case_number,"/meshing/1000um/BiV/BiV_thickness_transmural.dat"),quote = FALSE,row.names = FALSE,col.names = FALSE)
 }
 
+#' @description Function deprecated.
 Select_scar_thickness <- function(case_number){
   print(paste0("Case number ", case_number, "\n"))
   
@@ -98,6 +108,7 @@ Select_scar_thickness <- function(case_number){
   write.table(is_scar,file = paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/HF_case",case_number,"/meshing/1000um/BiV/BiV_scar_5mm_no_septum.dat"),quote = FALSE,row.names = FALSE,col.names = FALSE)
 }
 
+#' @description Function deprecated.
 Change_scar_tag <- function(case_number){
   print(paste0("Case number ", case_number))
   
@@ -112,6 +123,7 @@ Change_scar_tag <- function(case_number){
   
 }
 
+#' @description Function deprecated.
 Extract_endo_PN <- function(case_number, flag_debuggin = FALSE){
   source("/home/crg17/Desktop/scripts/4chmodel/R/common_functions.R")
   
@@ -132,20 +144,29 @@ Extract_endo_PN <- function(case_number, flag_debuggin = FALSE){
   
 }
 
+#' @description Function to merge two fibers files to have different directions
+#' in  the LV and in the RV. There is no continuity between them.
+#' 
+#' @param path2files Path to the fibre files
+#' @param LVfibfile Name of the fibre file to use for the LV.
+#' @param RVfibfile Name of the fibre file to use for the RV.
+#' @param tagfilename Tag file extracted with meshtool.
+#' @param output_name Output name for the new fibre file.
+#' @param flag_debugging If TRUE, prints whatever is reading and writing.
 Merge_fibre_files <- function(path2files, LVfibfile, RVfibfile, tagfilename,
-                              output_name){
+                              output_name, flag_debugging = FALSE){
   
-  source("/home/crg17/Desktop/scripts/4chmodel/R/common_functions.R")
+  source("./common_functions.R")
   Load_Install_Packages("dplyr")
   
   LVfibres <- paste0(path2files, "/", LVfibfile, ".lon") %>%
-              Read_table(file = ., skip = 1)
+              Read_table(file = ., skip = 1, flag_debugging = flag_debugging)
   
   RVfibres <- paste0(path2files, "/", RVfibfile, ".lon") %>%
-              Read_table(file = ., skip = 1)
+              Read_table(file = ., skip = 1, flag_debugging = flag_debugging)
   
   tagfile <- paste0(path2files, "/", tagfilename, ".dat") %>%
-             Read_table(file = ., skip = 1)
+             Read_table(file = ., skip = 1, flag_debugging = flag_debugging)
   tagfile[which(tagfile  == 25),] <- 1
   tagfile[which(tagfile  == 26),] <- 2
   
@@ -158,6 +179,7 @@ Merge_fibre_files <- function(path2files, LVfibfile, RVfibfile, tagfilename,
   
   Write_table(x = formatted_file,
               file = paste0(path2files, "/", output_name, ".lon"),
-              quote = FALSE, col.names = FALSE, row.names = FALSE)
+              quote = FALSE, col.names = FALSE, row.names = FALSE,
+              flag_debugging = flag_debugging)
   
 }
