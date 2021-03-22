@@ -46,6 +46,7 @@ Plot_variance_modes <- function(){
 #' Aesthetically they look like core-less pie charts, but it's basically stacked
 #' rectangles in polar coordinates.
 #' @param gp_folder Name of the folder of the GP results. 
+#' @param flag_debugging If TRUE, prints whatever is reading and writing.
 #' @return A png image for each phenotype + a plot for the legend
 Plot_doughnut_chart <- function(gp_folder = "tov7_final", flag_debugging = FALSE){
   
