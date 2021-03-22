@@ -1,19 +1,26 @@
-# list.of.packages <- c("nnet","corrplot","berryFunctions","plot.matrix","RColorBrewer","ggplot2","treemap","latex2exp")
-# new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-# if(length(new.packages)) install.packages(new.packages)
-# flags<-lapply(list.of.packages, require, character.only = TRUE)
-
+#' @description Function to merge data frames when the simulation stopped
+#' midways.
+#' 
+#' @param heart_case Number of the heart to correct the simulations.
+#' @param flag_read If TRUE, prints whatever is reading or writing.
 
 merge_restored_cavities <- function(heart_case, flag_read = FALSE){
   
-  if(flag_read)
-    print(paste0("You need the file /media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.LV_original.csv"))
+  source("./common_functions.R")
   
-  cav.LV_original <- read.csv(paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.LV_original.csv"), stringsAsFactors = FALSE)
   
-  if(flag_red)
-    print(paste0("You need the file /media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk350_restored/cav.LV.csv"))
-  cav.LV_restored <- read.csv(paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk350_restored/cav.LV.csv"), comment.char = "#")
+  cav.LV_original <- Read_csv(paste0("/media/crg17/Seagate Backup Plus Drive/",
+                                     "CT_cases/h_case",heart_case,
+                                     "/simulations/cohort/",heart_case,
+                                     "HC_wk3_tpeak_120/cav.LV_original.csv"),
+                              stringsAsFactors = FALSE, 
+                              flag_debugging = flag_read)
+  
+ cav.LV_restored <- Read_csv(paste0("/media/crg17/Seagate Backup Plus Drive/",
+                                    "CT_cases/h_case",heart_case,
+                                    "/simulations/cohort/",heart_case,
+                                    "HC_wk350_restored/cav.LV.csv"),
+                             comment.char = "#", flag_debugging = flag_read)
   
   cav.LV_final <- cav.LV_original
   
@@ -21,12 +28,25 @@ merge_restored_cavities <- function(heart_case, flag_read = FALSE){
   cav.LV_final <- cav.LV_final[-c((row_to_delete_from):nrow(cav.LV_final)),]
   cav.LV_final <- rbind(cav.LV_final,cav.LV_restored)
   
-  write.csv(cav.LV_final, file = paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.LV.csv"),row.names = FALSE )
+  Write_csv(cav.LV_final, file = paste0("/media/crg17/Seagate Backup Plus Drive",
+                                        "/CT_cases/h_case",heart_case,
+                                        "/simulations/cohort/",heart_case,
+                                        "HC_wk3_tpeak_120/cav.LV.csv"),
+            row.names = FALSE, flag_debugging = flag_read)
   
-  print(paste0("You need the file /media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.RV_original.csv"))
-  cav.RV_original <- read.csv(paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.RV_original.csv"), stringsAsFactors = FALSE)
-  print(paste0("You need the file /media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk350_restored/cav.RV.csv"))
-  cav.RV_restored <- read.csv(paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk350_restored/cav.RV.csv"), comment.char = "#")
+  cav.RV_original <- Read_csv(paste0("/media/crg17/Seagate Backup Plus Drive/",
+                                     "CT_cases/h_case",heart_case,
+                                     "/simulations/cohort/",heart_case,
+                                     "HC_wk3_tpeak_120/cav.RV_original.csv"),
+                              stringsAsFactors = FALSE,
+                              flag_debugging = flag_read)
+
+  cav.RV_restored <- Read_csv(paste0("/media/crg17/Seagate Backup Plus Drive/",
+                                     "CT_cases/h_case",heart_case,
+                                     "/simulations/cohort/",heart_case,
+                                     "HC_wk350_restored/cav.RV.csv"),
+                              comment.char = "#",
+                              flag_debugging = flag_read)
   
   cav.RV_final <- cav.RV_original
   
@@ -34,7 +54,11 @@ merge_restored_cavities <- function(heart_case, flag_read = FALSE){
   cav.RV_final <- cav.RV_final[-c((row_to_delete_from):nrow(cav.RV_final)),]
   cav.RV_final <- rbind(cav.RV_final,cav.RV_restored)
   
-  write.csv(cav.RV_final, file = paste0("/media/crg17/Seagate Backup Plus Drive/CT_cases/h_case",heart_case,"/simulations/cohort/",heart_case,"HC_wk3_tpeak_120/cav.RV.csv"),row.names = FALSE )
+  Write_csv(cav.RV_final, file = paste0("/media/crg17/Seagate Backup Plus Drive",
+                                        "/CT_cases/h_case",heart_case,
+                                        "/simulations/cohort/",heart_case,
+                                        "HC_wk3_tpeak_120/cav.RV.csv"),
+            row.names = FALSE, flag_debugging = flag_read)
   
 }
 #' @description Function to create (either printing or returning) a table with
@@ -54,12 +78,11 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
                              read_fen_from_file = FALSE, flag_read = FALSE){
   
   set.seed(1)
-  source("/home/crg17/Desktop/scripts/4chmodel/R/common_functions.R")
+  source("./common_functions.R")
   Load_Install_Packages(c("berryFunctions","corrplot"))
   #Creating the data
-  if(flag_read)
-    print(paste0("You need file /data/modes.csv"))
-  modes <- as.data.frame(read.csv("/data/modes.csv", header=TRUE, sep = "\t"))
+  modes <- as.data.frame(Read_csv("/data/modes.csv", header=TRUE, sep = "\t",
+                                  flag_debugging = flag_read))
   modes <- modes[,2:ncol(modes)]
   # colnames(modes) <- paste0("Mode",c(1:ncol(modes)))
   
@@ -129,9 +152,10 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
     for(heart_num in c(1:length(hearts))){
       heart <- hearts[heart_num]
       
-      if(flag_read)
-        print(paste0("You need the file","/media/crg17",harddrive,"/h_case",heart,"/simulations/cohort/",heart,"HC_wk3_tpeak_120/cav.",ventricle,".csv"))
-      cav.vent <- read.csv(paste0("/media/crg17",harddrive,"/h_case",heart,"/simulations/cohort/",heart,"HC_wk3_tpeak_120/cav.",ventricle,".csv"),stringsAsFactors = FALSE)
+      cav.vent <- Read_csv(paste0("/media/crg17",harddrive,"/h_case",heart,
+                                  "/simulations/cohort/",heart,
+                                  "HC_wk3_tpeak_120/cav.",ventricle,".csv"),
+                           stringsAsFactors = FALSE, flag_debugging = flag_read)
       new_phase <- Correct_phase_name(cav.vent = cav.vent[2:nrow(cav.vent),])
       aux <- cav.vent$Pressure[52:nrow(cav.vent)]
       
@@ -140,7 +164,6 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
       V_vent[,heart_num] <- as.double(cav.vent$Volume[52:nrow(cav.vent)])
       Flux_vent[,heart_num] <- as.double(cav.vent$Flux[52:nrow(cav.vent)])
       DFlux_vent[,heart_num] <- as.double(cav.vent$D_Flux[52:nrow(cav.vent)])
-      # State_vent <- mapply(trimws,cav.vent$State[52:nrow(cav.vent)])
       State_vent[,heart_num] <- new_phase[51:length(new_phase)]
       Pout_vent[,heart_num] <- as.double(cav.vent$P_out[52:nrow(cav.vent)])
       Qout_vent[,heart_num] <- as.double(cav.vent$Q_out[52:nrow(cav.vent)])
@@ -176,65 +199,71 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
     fenotypes_vent$dPdtmax <- apply(dP_vent,2,max)
     fenotypes_vent$dPdtmin <- apply(dP_vent,2,min)
     
-    # fenotypes_vent$ICT <- apply(State_vent,2,function(x) (which(x == "IVC")[1]-1))
-    fenotypes_vent$ICT <- apply(State_vent,2,function(x) (length(which(x == "IVC"))))
-    fenotypes_vent$ET <- apply(State_vent,2,function(x) (length(which(x == "ejec"))))
-    fenotypes_vent$IRT <- apply(State_vent,2,function(x) (length(which(x == "IVR"))))
-    fenotypes_vent$tsys <- apply(State_vent,2,function(x) (length(which(x == "IVC")) + length(which(x == "ejec"))))
+    fenotypes_vent$ICT <- apply(State_vent,2,
+                                function(x) (length(which(x == "IVC"))))
+    fenotypes_vent$ET <- apply(State_vent,2,
+                               function(x) (length(which(x == "ejec"))))
+    fenotypes_vent$IRT <- apply(State_vent,2,
+                                function(x) (length(which(x == "IVR"))))
+    fenotypes_vent$tsys <- apply(State_vent,2,
+                                 function(x) (length(which(x == "IVC")) + length(which(x == "ejec"))))
     
     fenotypes_vent$EDV <- V_vent[1,] 
     fenotypes_vent$EDP <- P_vent[1,]
     fenotypes_vent$ESV <- apply(V_vent,2,min)
     fenotypes_vent$ESP <- apply(-dP_vent,2,'which.max')
-  aux <- apply(State_vent,2,function(x2) (which(x2 == "IVR")[1]-1))
-  fenotypes_vent$ESP <- P_vent[aux]
+    aux <- apply(State_vent,2,function(x2) (which(x2 == "IVR")[1]-1))
+    fenotypes_vent$ESP <- P_vent[aux]
+    
+    fenotypes_vent$SV <- fenotypes_vent$EDV - fenotypes_vent$ESV
+    fenotypes_vent$EF <- 100 * fenotypes_vent$SV / fenotypes_vent$EDV
   
-  fenotypes_vent$SV <- fenotypes_vent$EDV - fenotypes_vent$ESV
-  fenotypes_vent$EF <- 100 * fenotypes_vent$SV / fenotypes_vent$EDV
-  
-  for(heart_num in c(1:length(hearts))){
-    fenotypes_vent$V1[heart_num] <- V_vent[fenotypes_vent$tpeak[heart_num],heart_num]
-    if(flag_read){
-      print(paste0("You need the file ","/media/crg17",harddrive,"/h_case",hearts[heart_num],"/meshing/1000um/BiV/",ventricle,"_mesh_volume.dat"))
+    for(heart_num in c(1:length(hearts))){
+      fenotypes_vent$V1[heart_num] <- V_vent[fenotypes_vent$tpeak[heart_num],
+                                             heart_num]
+   
+      vent_volume <- Read_delim(paste0("/media/crg17",harddrive,"/h_case",
+                                       hearts[heart_num],"/meshing/1000um/BiV/",
+                                       ventricle,"_mesh_volume.dat"),
+                                stringsAsFactors = FALSE, header = FALSE,
+                                flag_debugging = flag_read)
+      fenotypes_vent$Myo_vol[heart_num] <- sum(as.numeric(vent_volume$V1))/1000
     }
-    vent_volume <- read.delim(paste0("/media/crg17",harddrive,"/h_case",hearts[heart_num],"/meshing/1000um/BiV/",ventricle,"_mesh_volume.dat"),stringsAsFactors = FALSE,header = FALSE)
-    fenotypes_vent$Myo_vol[heart_num] <- sum(as.numeric(vent_volume$V1))/1000
-  }
   
   fenotypes_vent$EF1 <- 100 * (fenotypes_vent$EDV - fenotypes_vent$V1) / fenotypes_vent$EDV
   
   
   
   if(with_EP){
-  # We add the electrophysiology:
-    if(flag_read)
-      print("You need the file /media/crg17/Seagate Backup Plus Drive/CT_cases/forall/ATs_values_healthy_synthetic.txt")
-  ATs_values_temp <- read.delim("/media/crg17/Seagate Backup Plus Drive/CT_cases/forall/ATs_values_healthy_synthetic.txt")
-  rownames(ATs_values_temp)[1:9] <- c("01","02","03","04","05","06","07","08","09")
-  
-  ATs_values_healthy_synthetic <- ATs_values_temp[hearts,]
-    fenotypes_vent$QRS <- as.numeric(ATs_values_healthy_synthetic$TAT)
-    fenotypes_vent$AT1090 <- as.numeric(ATs_values_healthy_synthetic$AT.10.90)
+    # We add the electrophysiology:
+    ATs_values_temp <- Read_delim(paste0("/media/crg17/Seagate Backup Plus Drive/",
+                                  "CT_cases/forall/",
+                                  "ATs_values_healthy_synthetic.txt"),
+                                  flag_debugging = flag_read)
+    rownames(ATs_values_temp)[1:9] <- c(paste0("0",1:9))
     
-    if(ventricle == "LV"){
-      fenotypes_vent$AT <- as.numeric(ATs_values_healthy_synthetic$TAT.LV)
+    ATs_values_healthy_synthetic <- ATs_values_temp[hearts,]
+      fenotypes_vent$QRS <- as.numeric(ATs_values_healthy_synthetic$TAT)
+      fenotypes_vent$AT1090 <- as.numeric(ATs_values_healthy_synthetic$AT.10.90)
+      
+      if(ventricle == "LV"){
+        fenotypes_vent$AT <- as.numeric(ATs_values_healthy_synthetic$TAT.LV)
+      }
+
+  }
+  
+  
+    if(action != "savefen"){
+      corr_fen_vent <- fenotypes_vent[,2:ncol(fenotypes_vent)]
     }
-
-  }
-  
-  
-  if(action != "savefen"){
-  corr_fen_vent <- fenotypes_vent[,2:ncol(fenotypes_vent)]
-  }
-  else{
-    corr_fen_vent <- fenotypes_vent[,1:ncol(fenotypes_vent)]
-  }
+    else{
+      corr_fen_vent <- fenotypes_vent[,1:ncol(fenotypes_vent)]
+    }
   }
 
   else{
-    if(flag_read)
-      print(paste0("You need the file /data/fenotypes_",ventricle,"_",cohort,".csv"))
-    corr_fen_vent <- read.csv2(paste0("/data/fenotypes_",ventricle,"_",cohort,".csv"))
+    corr_fen_vent <- Read_csv2(paste0("/data/fenotypes_",ventricle,"_",cohort,
+                                      ".csv"), flag_debugging = flag_read)
     if(action != "savefen"){
       corr_fen_vent <- corr_fen_vent[,-1]
     }
@@ -267,7 +296,8 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
         
         corr_modes <- corr_modes[-failure,]
       }
-    corr_vent <- sapply(1:ncol(corr_fen_vent), function(i,j) cor(corr_fen_vent[,i], corr_modes[,j]))
+    corr_vent <- sapply(1:ncol(corr_fen_vent),
+                        function(i,j) cor(corr_fen_vent[,i], corr_modes[,j]))
     }
     else{
       corr_vent <- sapply(as.vector(1:ncol(corr_fen_vent)), function(i,j) {
@@ -275,10 +305,11 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
           cor(corr_fen_vent[,i],corr_modes[,j])
         }
         else{
-          cor(corr_fen_vent[-which(is.na(corr_fen_vent[,i])),i],corr_modes[-which(is.na(corr_fen_vent[,i])),j])
+          cor(corr_fen_vent[-which(is.na(corr_fen_vent[,i])),i],
+              corr_modes[-which(is.na(corr_fen_vent[,i])),j])
         }
-        }
-        )
+      }
+      )
     }
     colnames(corr_vent) <- colnames(corr_fen_vent)
     rownames(corr_vent) <- paste0("Mode ",c(1:nrow(corr_vent)))
@@ -296,23 +327,28 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
   if(action != "savefen" && action != "savecorr"){
   if(action == "saveplot"){
     if(cohort == "CT"){
-      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"), width = 1770, height = 1600,
+      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"),
+          width = 1770, height = 1600,
           units = "px", pointsize = 12, bg = "white", res = 120)
     }
     if(cohort == "PROJECTED18"){
-      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"), width = 1700, height = 1700,
+      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"),
+          width = 1700, height = 1700,
           units = "px", pointsize = 12, bg = "white", res = 120)
     }
     if(cohort == "PROJECTED14"){
-      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"), width = 1700, height = 1400,
+      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"),
+          width = 1700, height = 1400,
           units = "px", pointsize = 12, bg = "white", res = 120)
     }
     if(cohort == "EXTREME2" || cohort == "EXTREME3" || cohort == "PROJECTED9"){
-      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"), width = 1600, height = 1000,
+      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"),
+          width = 1600, height = 1000,
           units = "px", pointsize = 12, bg = "white", res = 120)
     }
     if(cohort == "PROJECTED5"){
-      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"), width = 1600, height = 700,
+      png(filename=paste0("/home/crg17/Pictures/",cohort,"_",ventricle,".png"),
+          width = 1600, height = 700,
           units = "px", pointsize = 12, bg = "white", res = 120)
     }
   }
@@ -328,18 +364,28 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
     delta_right = 2
     delta_top = 0
   if(ventricle == "LV")
-    corrplot(corr_vent,"square",mar=c(mar_bottom,mar_left,mar_top,mar_right),tl.cex=3,cl.cex=3,tl.col="red",tl.srt=60,cl.pos = "n")
+    corrplot(corr_vent,"square",mar=c(mar_bottom,mar_left,mar_top,mar_right),
+             tl.cex=3,cl.cex=3,tl.col="red",tl.srt=60,cl.pos = "n")
   else if(ventricle == "RV")
-    corrplot(corr_vent[,1:(ncol(corr_vent)-2)],"square",mar=c(mar_bottom + delta_bottom,mar_left + delta_left,mar_top + delta_top,mar_right + delta_right),tl.cex=3,cl.cex=3,tl.col="red",tl.srt=60)
+    corrplot(corr_vent[,1:(ncol(corr_vent)-2)],"square",
+             mar=c(mar_bottom + delta_bottom,
+                   mar_left + delta_left,
+                   mar_top + delta_top,
+                   mar_right + delta_right),
+             tl.cex=3,cl.cex=3,tl.col="red",tl.srt=60)
     
   if(cohort == "CT")
-    mtext(paste0("Correlation matrix for the output of\n the ", cohort," cohort for the ", ventricle), at=7, cex=4, line = -3)
+    mtext(paste0("Correlation matrix for the output of\n the ", cohort,
+                 " cohort for the ", ventricle), at=7, cex=4, line = -3)
   if(cohort == "EXTREME2" || cohort == "EXTREME3" || cohort == "PROJECTED9"|| cohort == "PROJECTED5")
-    mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort," cohort"), at=9, cex=3)
+    mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort,
+                 " cohort"), at=9, cex=3)
   if(cohort == "PROJECTED18")
-    mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort," cohort"), at=9, cex=3)
+    mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort,
+                 " cohort"), at=9, cex=3)
     if(cohort == "PROJECTED14")
-      mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort," cohort"), at=9.5, cex=3)
+      mtext(paste0("Correlation matrix for the ", ventricle, " of the ", cohort,
+                   " cohort"), at=9.5, cex=3)
   }
   if(action == "saveplot"){
       dev.off()
@@ -353,32 +399,43 @@ plot_correlation <- function(cohort, with_EP = TRUE, action = "plot",
       corr_fen_vent <- insertRows(corr_fen_vent,failure)
     }
     if(action == "savefen"){
-      # if(cohort == "CT"){
-          write.table(corr_fen_vent,paste0("/data/files4matlab/fenotypes_",ventricle,"_",cohort,".csv"),row.names = FALSE,sep = ",", dec = ".", col.names = TRUE)
-      # }
-      # else{
-        # write.table(corr_fen_vent,paste0("/data/fenotypes_",ventricle,"_",cohort,".csv"),row.names = FALSE,sep = ";", dec = ",", col.names = TRUE)
-        # }
+          Write_table(corr_fen_vent,paste0("/data/files4matlab/fenotypes_",
+                                           ventricle,"_",cohort,".csv"),
+                      row.names = FALSE,sep = ",", dec = ".", col.names = TRUE,
+                      flag_debugging = flag_read)
     }
     if(action == "savecorr")
-    write.table(corr_vent,paste0("/data/correlations_",ventricle,"_",cohort,".csv"),row.names = FALSE,sep = ",", dec = ".", col.names = TRUE)
+      Write_table(corr_vent,paste0("/data/correlations_",ventricle,"_",cohort,
+                                   ".csv"),row.names = FALSE,sep = ",",
+                  dec = ".", col.names = TRUE, flag_debugging = flag_read)
     }
 
 }
 
-plot_difference <- function(cohort1,cohort2,with_EP = TRUE, ventricle, flag_read = FALSE){
+#' @note Function deprecated.
+plot_difference <- function(cohort1,cohort2,with_EP = TRUE, ventricle,
+                            flag_read = FALSE){
   
-  corr_plot_original <- plot_correlation(cohort = cohort1, with_EP = with_EP, action = "return",  ventricle = ventricle)
-  corr_plot_projected <- plot_correlation(cohort = cohort2, with_EP = with_EP, action = "return", ventricle = ventricle)
+  corr_plot_original <- plot_correlation(cohort = cohort1, with_EP = with_EP,
+                                         action = "return",
+                                         ventricle = ventricle)
+  corr_plot_projected <- plot_correlation(cohort = cohort2, with_EP = with_EP,
+                                          action = "return",
+                                          ventricle = ventricle)
   
-  png(filename=paste0("/home/crg17/Pictures/similarity_original_projected_",ventricle,".png"), width = 1600, height = 1600,
+  png(filename=paste0("/home/crg17/Pictures/similarity_original_projected_",
+                      ventricle,".png"), width = 1600, height = 1600,
       units = "px", pointsize = 12, bg = "white", res = 120)
-  corrplot(is.corr = FALSE, 1-abs(corr_plot_original-corr_plot_projected)/2,"pie",mar=c(0,0,0.25,0),tl.cex=1.5,cl.cex=1.5,tl.col="red",tl.srt=60,cl.lim=c(0,1),col=colorRampPalette(c("white","white","black"))(200))
-  mtext(paste0("Similarity of the ",ventricle," correlation matrices"), at=10, cex=3.5)
+  corrplot(is.corr = FALSE, 1-abs(corr_plot_original-corr_plot_projected)/2,
+           "pie",mar=c(0,0,0.25,0),tl.cex=1.5,cl.cex=1.5,tl.col="red",tl.srt=60,
+           cl.lim=c(0,1),col=colorRampPalette(c("white","white","black"))(200))
+  mtext(paste0("Similarity of the ",ventricle," correlation matrices"),
+        at=10, cex=3.5)
   dev.off()
 
 }
 
+#' @note Function deprecated.
 plot_difference_original_18 <- function(flag_read = FALSE){
   
   if(flag_read){
@@ -397,14 +454,17 @@ plot_difference_original_18 <- function(flag_read = FALSE){
   colnames(fenotypes_LV_PROJECTED18) <- paste0(colnames(fenotypes_LV_PROJECTED18)," LV")
   colnames(fenotypes_RV_PROJECTED18) <- paste0(colnames(fenotypes_RV_PROJECTED18)," RV")
   
-  fenotypes_CT <- cbind(fenotypes_LV_CT[,2:ncol(fenotypes_LV_CT)],fenotypes_RV_CT[,2:(ncol(fenotypes_RV_CT-2))])
-  fenotypes_PROJECTED18 <- cbind(fenotypes_LV_PROJECTED18[,2:ncol(fenotypes_LV_PROJECTED18)],fenotypes_RV_PROJECTED18[,2:(ncol(fenotypes_RV_PROJECTED18-2))])
+  fenotypes_CT <- cbind(fenotypes_LV_CT[,2:ncol(fenotypes_LV_CT)],
+                        fenotypes_RV_CT[,2:(ncol(fenotypes_RV_CT-2))])
+  fenotypes_PROJECTED18 <- cbind(fenotypes_LV_PROJECTED18[,2:ncol(fenotypes_LV_PROJECTED18)],
+                                 fenotypes_RV_PROJECTED18[,2:(ncol(fenotypes_RV_PROJECTED18-2))])
   
   fenotypes_diff <- data.frame()
   
   for (i in c(1:nrow(fenotypes_CT))) {
     for (j in c(1:ncol(fenotypes_CT))) {
-      fenotypes_diff[i,j] <- 1-abs((fenotypes_CT[i,j]-fenotypes_PROJECTED18[i,j])/max(fenotypes_PROJECTED18[i,j],fenotypes_CT[i,j]))
+      fenotypes_diff[i,j] <- 1-abs((fenotypes_CT[i,j]-fenotypes_PROJECTED18[i,j])/max(fenotypes_PROJECTED18[i,j],
+                                                                                      fenotypes_CT[i,j]))
     }
   }
   
@@ -413,9 +473,11 @@ plot_difference_original_18 <- function(flag_read = FALSE){
   fenotypes_diff <- as.matrix(fenotypes_diff)
   fenotypes_diff[is.na(fenotypes_diff)] <- 0
   
-  png(filename=paste0("/home/crg17/Pictures/similarity_original_projected.png"), width = 3000, height = 2000,
+  png(filename=paste0("/home/crg17/Pictures/similarity_original_projected.png"),
+      width = 3000, height = 2000,
       units = "px", pointsize = 12, bg = "white", res = 120)
-  corrplot(is.corr = FALSE, fenotypes_diff,"pie",mar=c(0,0,0.25,0),tl.cex=3,cl.cex=1.5,tl.col="red",tl.srt=60,cl.lim=c(0,1))
+  corrplot(is.corr = FALSE, fenotypes_diff,"pie",mar=c(0,0,0.25,0),tl.cex=3,
+           cl.cex=1.5,tl.col="red",tl.srt=60,cl.lim=c(0,1))
   mtext(paste0("Similarity of the original and PCA fenotypes"), at=18, cex=5)
   dev.off()
   
@@ -433,10 +495,12 @@ plot_difference_original_18 <- function(flag_read = FALSE){
 #' want to exclude from the table (it removes these columns).
 plot_tables <- function(ventricle, table, flag_read = FALSE, 
                         flag_return = FALSE,remove_phenotypes=c()){
-  
+  source("./common_functions.R")
   if(table == "all"){
-    plot_correlation(cohort = "CT", action = "saveplot", ventricle = "LV", read_fen_from_file = TRUE)
-    plot_correlation(cohort = "CT", action = "saveplot", ventricle = "RV", read_fen_from_file = TRUE)
+    plot_correlation(cohort = "CT", action = "saveplot", ventricle = "LV",
+                     read_fen_from_file = TRUE)
+    plot_correlation(cohort = "CT", action = "saveplot", ventricle = "RV",
+                     read_fen_from_file = TRUE)
     plot_tables(ventricle = "LV", table = "x2")
     plot_tables(ventricle = "RV", table = "x2")
     plot_tables(ventricle = "LV", table = "mean_residuals")
@@ -447,29 +511,29 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
     plot_tables(ventricle = "RV", table = "sensitivity")
     }
 
-  if(flag_read)
-    print("You need the file /data/modes.csv")
-  # modes_whole <- read.csv("/data/modes.csv", header = FALSE)
-  modes_whole <- read.csv("/data/modes.csv",header = TRUE,sep = "\t")
+  modes_whole <- Read_csv("/data/modes.csv",header = TRUE,sep = "\t",
+                          flag_debugging = flag_read)
   modes <- mapply(sd,modes_whole[1:19,2:10])
   
-  if(flag_read)
-    print(paste0("You need the file /data/fenotypes_",ventricle,"_CT.csv"))
-  
-  feno_CT <- read.csv(paste0("/data/fenotypes_",ventricle,"_CT.csv"), header = TRUE, sep = ";", dec = ",")
-  feno_CT <- feno_CT[,2:ncol(feno_CT)]
-  if(flag_read)
-    print(paste0("You need the file /data/fenotypes_",ventricle,"_EXTREME2.csv"))
-  feno_extreme2 <- read.csv(paste0("/data/fenotypes_",ventricle,"_EXTREME2.csv"), header = TRUE, sep = ";", dec = ",")
+  feno_CT <- Read_csv(paste0("/data/fenotypes_",ventricle,"_CT.csv"),
+                      header = TRUE, sep = ";", dec = ",", 
+                      flag_debugging = flag_read)
+  feno_CT <- feno_CT[,2:ncol( feno_CT)]
+
+  feno_extreme2 <- Read_csv(paste0("/data/fenotypes_",ventricle,
+                                   "_EXTREME2.csv"), header = TRUE, sep = ";",
+                            dec = ",", flag_debugging = flag_read)
   feno_extreme2 <- feno_extreme2[,2:ncol(feno_extreme2)]
-  if(flag_read)
-    print(paste0("You need the file /data/fenotypes_",ventricle,"_EXTREME3.csv"))
-  feno_extreme3 <- read.csv(paste0("/data/fenotypes_",ventricle,"_EXTREME3.csv"), header = TRUE, sep = ";", dec = ",")
+
+  feno_extreme3 <- Read_csv(paste0("/data/fenotypes_",ventricle,
+                                   "_EXTREME3.csv"), header = TRUE, sep = ";",
+                            dec = ",", flag_debugging = flag_read)
   feno_avg <- feno_extreme3[1,2:ncol(feno_extreme3)]
   feno_extreme3 <- feno_extreme3[2:nrow(feno_extreme3),2:ncol(feno_extreme3)]
-  if(flag_read)
-    print(paste0("You need the file /data/fenotypes_",ventricle,"_EXTREME1.csv"))
-  feno_extreme1 <- read.csv(paste0("/data/fenotypes_",ventricle,"_EXTREME1.csv"), header = TRUE, sep = ";", dec = ",")
+
+  feno_extreme1 <- Read_csv(paste0("/data/fenotypes_",ventricle,
+                                   "_EXTREME1.csv"), header = TRUE, sep = ";",
+                            dec = ",", flag_debugging = flag_read)
   feno_extreme1 <- feno_extreme1[,2:ncol(feno_extreme1)]
   
   quad_terms <- NA*feno_extreme2[1:9,]
@@ -486,7 +550,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
   predictions_feno <- c()
   residuals_no_norm <- c()
   
-  range_CT <- lapply(feno_CT, function(x) max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+  range_CT <- lapply(feno_CT,
+                     function(x) max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
   range_CT <- as.data.frame(range_CT)
   avg_CT <- lapply(feno_CT, mean, na.rm = TRUE)
   
@@ -495,7 +560,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
     for(fenotype in c(1:ncol(feno_extreme2))){
 
       x <- c(3*modes[mode],-3*modes[mode],0,2*modes[mode],-2*modes[mode])
-      y <- c(feno_extreme3[c((mode*2)-1,mode*2),fenotype],feno_avg[1,fenotype],feno_extreme2[c((mode*2)-1,mode*2),fenotype])
+      y <- c(feno_extreme3[c((mode*2)-1,mode*2),fenotype],feno_avg[1,fenotype],
+             feno_extreme2[c((mode*2)-1,mode*2),fenotype])
       
       if(mode == 2){
         x <- c(x,modes[mode],-modes[mode])
@@ -510,7 +576,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
       
       if(table == "x2" || table == "return_x2"){
       #Non linear least squares
-      nonlin_mod=nls(y~a*x^2+b*x+c,start=list(a=0,b=0,c=0),control = list(warnOnly=TRUE), na.action = na.exclude) 
+      nonlin_mod=nls(y~a*x^2+b*x+c,start=list(a=0,b=0,c=0),
+                     control = list(warnOnly=TRUE), na.action = na.exclude) 
       
       quad_terms[mode,fenotype] <-  environment(nonlin_mod[["m"]][["resid"]])[["env"]][["a"]]
       if(nonlin_mod$convInfo$stopCode != 0)
@@ -518,9 +585,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
       }
       
       if(table == "range" || table == "range_norm"){
-      range_extreme[mode,fenotype] <- max(y) - min(y)
-      # range_normalised[mode,fenotype] <- range_extreme2[mode,fenotype]/range_CT[fenotype]
-      range_normalised[mode,fenotype] <- range_extreme[mode,fenotype]/as.numeric(avg_CT[fenotype])
+        range_extreme[mode,fenotype] <- max(y) - min(y)
+        range_normalised[mode,fenotype] <- range_extreme[mode,fenotype]/as.numeric(avg_CT[fenotype])
       }
       
       
@@ -528,17 +594,16 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
       y <- feno_CT[,fenotype]
       
       if(table == "sensitivity"){
-      lm_temp <- lm(y ~ x)
-      slope <- lm_temp$coefficients["x"]
-      # sensitivity[mode,fenotype] <- slope/(as.numeric(avg_CT[fenotype])) # Slope over the average of the sample
-      sensitivity[mode,fenotype] <- slope
+        lm_temp <- lm(y ~ x)
+        slope <- lm_temp$coefficients["x"]
+        sensitivity[mode,fenotype] <- slope
       }
-      # x <- c(0,2*modes[mode],-2*modes[mode])
-      # y <- c(feno_avg[1,fenotype],feno_extreme2[c((mode*2)-1,mode*2),fenotype])
       
       if(table %in% c("mean_residuals","median_residuals","cv_residuals")){
         x <- c(3*modes[mode],-3*modes[mode],0,2*modes[mode],-2*modes[mode])
-        y <- c(feno_extreme3[c((mode*2)-1,mode*2),fenotype],feno_avg[1,fenotype],feno_extreme2[c((mode*2)-1,mode*2),fenotype])
+        y <- c(feno_extreme3[c((mode*2)-1,mode*2),fenotype],
+               feno_avg[1,fenotype],feno_extreme2[c((mode*2)-1,mode*2),
+                                                  fenotype])
         
         if(mode == 2){
           x <- c(x,modes[mode],-modes[mode])
@@ -552,13 +617,19 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
         }
         
         lm_temp <- lm(y ~ x)
-        new_y <- predict.lm(object = lm_temp, newdata = data.frame(x = modes_whole[1:19,mode]))
+        new_y <- predict.lm(object = lm_temp, 
+                            newdata = data.frame(x = modes_whole[1:19,mode]))
         predictions_feno <- cbind(predictions_feno,new_y)
         residuals_no_norm <- cbind(residuals_no_norm,abs(new_y-feno_CT[,fenotype]))
-        mean_residuals_no_norm[mode,fenotype] <- mean(abs(new_y - feno_CT[,fenotype]),na.rm = TRUE)
-        mean_residuals[mode,fenotype] <- mean(abs(new_y - feno_CT[,fenotype]), na.rm = TRUE)/as.numeric(avg_CT[fenotype])
-        median_residuals[mode,fenotype] <- median(abs(new_y - feno_CT[,fenotype]), na.rm = TRUE)
-        cv_residuals[mode,fenotype] <- 100*sd(abs(new_y - feno_CT[,fenotype]), na.rm = TRUE)/mean(abs(new_y - feno_CT[,fenotype]), na.rm = TRUE)
+        mean_residuals_no_norm[mode,fenotype] <- mean(abs(new_y - feno_CT[,fenotype]),
+                                                      na.rm = TRUE)
+        mean_residuals[mode,fenotype] <- mean(abs(new_y - feno_CT[,fenotype]), 
+                                              na.rm = TRUE)/as.numeric(avg_CT[fenotype])
+        median_residuals[mode,fenotype] <- median(abs(new_y - feno_CT[,fenotype]),
+                                                  na.rm = TRUE)
+        cv_residuals[mode,fenotype] <- 100*sd(abs(new_y - feno_CT[,fenotype]), 
+                                              na.rm = TRUE)/mean(abs(new_y - feno_CT[,fenotype]),
+                                                                 na.rm = TRUE)
       }
     }
   }
@@ -582,7 +653,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
     
     rownames(quad_terms) <- paste0("Mode",rownames(quad_terms))
     
-    png(paste0('/home/crg17/Pictures/coeffx2_',ventricle,'.png'),width=2300,height=1000,res=100)
+    png(paste0('/home/crg17/Pictures/coeffx2_',ventricle,'.png'),
+        width=2300,height=1000,res=100)
     
     cex_value = 3
     corrplot(as.matrix(quad_terms),
@@ -593,7 +665,8 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
              tl.col="red",
              tl.srt=60,
              is.corr = FALSE)
-    mtext(paste0("Quadratic term of the fit for the synthetic cohorts in the ",ventricle),
+    mtext(paste0("Quadratic term of the fit for the synthetic cohorts in the ",
+                 ventricle),
           side=3,
           cex=cex_value+1)
     
@@ -605,9 +678,9 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
   if(table == "range"){
     rownames(range_extreme) <- paste0("Mode",rownames(range_extreme))
     
-    png(paste0('/home/crg17/Pictures/range_',ventricle,'.png'),width=2300,height=1000,res=100)
+    png(paste0('/home/crg17/Pictures/range_',ventricle,'.png'),width=2300,
+        height=1000,res=100)
     
-    # par(mar=c(11.1, 10.1, 4.1, 4.1))
     cex_value = 3
     corrplot(as.matrix(range_extreme),
              "square",
@@ -631,10 +704,6 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
     }
     
     
-    if(!flag_return){
-    png(paste0('/home/crg17/Pictures/range_norm_',ventricle,'.png'),width=2300,height=1000,res=100)
-    
-    # par(mar=c(11.1, 10.1, 4.1, 4.1))
     cex_value = 3
     corrplot(as.matrix(range_normalised),
              "square",
@@ -648,16 +717,18 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
           side=3,
           cex=cex_value+1,
           line=-3)
+    
     dev.off()
+    
+    return(range_normalised)
     }
-    else{
-      return(range_normalised)
-    }
-  }
+      
+    
   if(table == "mean_residuals"){
     rownames(mean_residuals) <- paste0("Mode",rownames(mean_residuals))
     
-    png(paste0('/home/crg17/Pictures/mean_residuals_',ventricle,'.png'),width=2300,height=1000,res=100)
+    png(paste0('/home/crg17/Pictures/mean_residuals_',ventricle,'.png'),
+        width=2300,height=1000,res=100)
     
     cex_value = 3
     corrplot(as.matrix(mean_residuals),
@@ -668,15 +739,22 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
              tl.col="red",
              tl.srt=60,
              is.corr = FALSE)
-    mtext(paste0("Normalised mean of the absolute residuals between the CT\n cohort's output and the fitting of the synthetic cohort for the ",ventricle),
+    mtext(paste0("Normalised mean of the absolute residuals between the CT\n",
+                 " cohort's output and the fitting of the synthetic cohort for",
+                 " the ",ventricle),
           side=3,
           cex=cex_value+1,
           line=-3)
     dev.off()
-    return(list(mean_residuals,feno_CT,predictions_feno,mean_residuals_no_norm,residuals_no_norm))
+    return(list(mean_residuals,
+                feno_CT,
+                predictions_feno,
+                mean_residuals_no_norm,
+                residuals_no_norm))
   }
   if(table == "median_residuals"){
-    png(paste0('/home/crg17/Pictures/median_residuals_',ventricle,'.png'),width=2300,height=1000,res=100)
+    png(paste0('/home/crg17/Pictures/median_residuals_',ventricle,'.png'),
+        width=2300,height=1000,res=100)
     par(mar=c(11.1, 10.1, 4.1, 4.1))
     cex_value = 2
     plot(as.matrix(median_residuals),
@@ -693,16 +771,21 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
          cex.main = cex_value)
     
     lablist<-paste(colnames(quad_terms),"     ")
-    text(seq(1, ncol(quad_terms), by=1), par("usr")[3] - 0.2, labels = lablist, srt = 45, pos = 1, xpd = TRUE, cex = cex_value)
+    text(seq(1, ncol(quad_terms), by=1), par("usr")[3] - 0.2,
+         labels = lablist, srt = 45, pos = 1, xpd = TRUE, cex = cex_value)
     lablist <- paste0("0",1:9)
-    text(0.3, 9:1, labels = lablist, srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
-    text(11, -1.3, labels = paste0("Functional parameters of the ", ventricle), srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
-    text(-0.6, 5.6, labels = "Modes", srt = 90, pos = 2, xpd = TRUE, cex = cex_value)
+    text(0.3, 9:1, labels = lablist, srt = 0, pos = 2, xpd = TRUE,
+         cex = cex_value)
+    text(11, -1.3, labels = paste0("Functional parameters of the ", ventricle), 
+         srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
+    text(-0.6, 5.6, labels = "Modes", srt = 90, pos = 2, xpd = TRUE,
+         cex = cex_value)
     
     dev.off()
   }
   if(table == "cv_residuals"){
-    png(paste0('/home/crg17/Pictures/cv_residuals_',ventricle,'.png'),width=2300,height=1000,res=100)
+    png(paste0('/home/crg17/Pictures/cv_residuals_',ventricle,'.png'),
+        width=2300,height=1000,res=100)
     par(mar=c(11.1, 10.1, 4.1, 4.1))
     cex_value = 2
     plot(as.matrix(cv_residuals),
@@ -719,11 +802,15 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
          cex.main = cex_value)
     
     lablist<-paste(colnames(quad_terms),"     ")
-    text(seq(1, ncol(quad_terms), by=1), par("usr")[3] - 0.2, labels = lablist, srt = 45, pos = 1, xpd = TRUE, cex = cex_value)
+    text(seq(1, ncol(quad_terms), by=1), par("usr")[3] - 0.2, labels = lablist, 
+         srt = 45, pos = 1, xpd = TRUE, cex = cex_value)
     lablist <- paste0("0",1:9)
-    text(0.3, 9:1, labels = lablist, srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
-    text(11, -1.3, labels = paste0("Functional parameters of the ", ventricle), srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
-    text(-0.6, 5.6, labels = "Modes", srt = 90, pos = 2, xpd = TRUE, cex = cex_value)
+    text(0.3, 9:1, labels = lablist, srt = 0, pos = 2, xpd = TRUE,
+         cex = cex_value)
+    text(11, -1.3, labels = paste0("Functional parameters of the ", ventricle),
+         srt = 0, pos = 2, xpd = TRUE, cex = cex_value)
+    text(-0.6, 5.6, labels = "Modes", srt = 90, pos = 2, xpd = TRUE,
+         cex = cex_value)
     
     dev.off()
   }
@@ -758,25 +845,35 @@ plot_tables <- function(ventricle, table, flag_read = FALSE,
   }
 }
 
-preprocess_fenotypes_GP <- function(action = "save", remove_phenotypes = c(),flag_read = FALSE){
+#' @description Function to prepare the data for the GSA.
+#' 
+#' @param action If "save", saves all the files. If "return", return the
+#' dataframes.
+#' @param remove_phenotypes Vector with the phenotypes to not include in the 
+#' GSA (columns to remove).
+#' @param flag_read If TRUE, prints whatever is reading and writing.
+
+preprocess_fenotypes_GP <- function(action = "save", remove_phenotypes = c(),
+                                    flag_read = FALSE){
+  
+  source("./common_functions.R")
   
   cohorts <- c("CT","EXTREME3","EXTREME2","EXTREME1")
-  modes <- read.table(file = "/data/modes.csv",header = TRUE)
+  modes <- Read_table(file = "/data/modes.csv", header = TRUE,
+                      flag_debugging = flag_read)
 
   GP_output <- data.frame()
   x_output <- data.frame()
   
   for(coh in cohorts){
     # We read the LV dataframe
-    if(flag_read)
-      print(paste0("You need the file /data/fenotypes_LV_",coh,".csv"))
-    fen_df <- read.csv2(paste0("/data/fenotypes_LV_",coh,".csv"))
+    fen_df <- Read_csv2(paste0("/data/fenotypes_LV_",coh,".csv"),
+                        flag_debugging = flag_read)
     # Remove the EDP
     fen_df <- fen_df[,-1]
     # We read the RV dataframe
-    if(flag_read)
-      print(paste0("You need the file /data/fenotypes_RV_",coh,".csv"))
-    fen_df_RV <- read.csv2(paste0("/data/fenotypes_RV_",coh,".csv"))
+    fen_df_RV <- Read_csv2(paste0("/data/fenotypes_RV_",coh,".csv"),
+                           flag_debugging = flag_read)
     # We remove the EDP, QRS and AT1090
     fen_df_RV <- fen_df_RV[,-c(1,18,19)]
     
@@ -811,19 +908,27 @@ preprocess_fenotypes_GP <- function(action = "save", remove_phenotypes = c(),fla
   if(action == "return")
     return(GP_output)
   if(action == "save"){
-    write.table(GP_output,"/data/PCA_GP/y.txt",row.names = FALSE,col.names = FALSE,quote = FALSE)
-    write.table(colnames(GP_output),"/data/PCA_GP/y_labels.txt",quote = FALSE, row.names = FALSE, col.names = FALSE)
-    write.table(rownames(GP_output),"/data/PCA_GP/heart_labels.txt",quote = FALSE, row.names = FALSE, col.names = FALSE)
-    write.table(x_output,"/data/PCA_GP/x.txt",row.names = FALSE,col.names = FALSE,quote = FALSE)
-    write.table(colnames(x_output),"/data/PCA_GP/modes_labels.txt",quote = FALSE, row.names = FALSE, col.names = FALSE)
+    Write_table(GP_output,"/data/PCA_GP/y.txt",row.names = FALSE,
+                col.names = FALSE,quote = FALSE, flag_debugging = flag_read)
+    Write_table(colnames(GP_output),"/data/PCA_GP/y_labels.txt",quote = FALSE,
+                row.names = FALSE, col.names = FALSE,
+                flag_debugging = flag_read)
+    Write_table(rownames(GP_output),"/data/PCA_GP/heart_labels.txt",
+                quote = FALSE, row.names = FALSE, col.names = FALSE,
+                flag_debugging = flag_read)
+    Write_table(x_output,"/data/PCA_GP/x.txt",row.names = FALSE,
+                col.names = FALSE,quote = FALSE, flag_debugging = flag_read)
+    Write_table(colnames(x_output),"/data/PCA_GP/modes_labels.txt",
+                quote = FALSE, row.names = FALSE, col.names = FALSE,
+                flag_debugging = flag_read)
     
   }
 }
 
+#' @description Function deprecated.
 difference_boxplot <- function(flag_read = FALSE){
   
-  if(flag_read)
-    print("/data/fenotypes_LV_CT.csv")
+  source("./common_functions.R")
   fenotypes_LV_CT <- read.csv2("/data/fenotypes_LV_CT.csv")
   
   df_CT_LV <- as.data.frame(fenotypes_LV_CT[,2])
@@ -901,12 +1006,13 @@ difference_boxplot <- function(flag_read = FALSE){
   return(df_boxplot)
 }
 
+#' @description Function to print the EF of a case.
 Show_EF <- function(path_to_cavfile, flag_read = FALSE){
     
-  if(flag_read)
-    print(paste0("You need the file ",path_to_cavfile,"/cav.LV.csv"))
+    source("./common_functions.R")
   
-    cav.vent <- read.csv(paste0(path_to_cavfile,"/cav.LV.csv"),stringsAsFactors = FALSE)
+    cav.vent <- Read.csv(paste0(path_to_cavfile,"/cav.LV.csv"),
+                         stringsAsFactors = FALSE, flag_debugging = flag_read)
     volumes <- as.double(cav.vent$Volume[52:nrow(cav.vent)])
     EDV <- volumes[1]
     ESV <- min(volumes)
@@ -915,10 +1021,8 @@ Show_EF <- function(path_to_cavfile, flag_read = FALSE){
     print("LV EF:")
     print(EF)
     
-    if(flag_read)
-      print(paste0("You need the file ",path_to_cavfile,"/cav.RV.csv"))
-    
-    cav.vent <- read.csv(paste0(path_to_cavfile,"/cav.RV.csv"),stringsAsFactors = FALSE)
+    cav.vent <- Read.csv(paste0(path_to_cavfile,"/cav.RV.csv"),
+                         stringsAsFactors = FALSE, flag_debugging = flag_read)
     volumes <- as.double(cav.vent$Volume[52:nrow(cav.vent)])
     EDV <- volumes[1]
     ESV <- min(volumes)
@@ -929,6 +1033,7 @@ Show_EF <- function(path_to_cavfile, flag_read = FALSE){
     
 }
 
+#' @description Function deprecated
 Check_negative_R2 <- function(GP_folder,ksplit=5){
   
   r2scores <- read.table(paste0("/data/PCA_GP/",GP_folder,"/r2scores.txt"), quote="\"", comment.char="")
@@ -955,7 +1060,7 @@ Check_negative_R2 <- function(GP_folder,ksplit=5){
 
 Plot_GSA_tree <- function(GP_folder,r2score=TRUE,flag_debugging = FALSE){
 
-  source("/home/crg17/Desktop/scripts/4chmodel/R/common_functions.R")
+  source("./common_functions.R")
   Load_Install_Packages(c("dplyr","treemap"))
   
   y_labels <- paste0("/data/PCA_GP/",GP_folder,"/y_labels.txt") %>%
@@ -974,7 +1079,8 @@ Plot_GSA_tree <- function(GP_folder,r2score=TRUE,flag_debugging = FALSE){
   }
   r2scores <- r2scores$V1
   
-  r2_split <- split(r2scores, ceiling(seq_along(r2scores)/round(length(r2scores)/length(y_labels))))
+  r2_split <- split(r2scores,
+                    ceiling(seq_along(r2scores)/round(length(r2scores)/length(y_labels))))
   r2_matrix<-as.matrix(as.data.frame(r2_split))
   
   for(i in 1:length(y_labels)){
@@ -1011,12 +1117,21 @@ Plot_GSA_tree <- function(GP_folder,r2score=TRUE,flag_debugging = FALSE){
   if(mean(r2_matrix[,i]) < 0)
     r2_value <- round(mean(r2_matrix[,i]),2)
   
-  if(r2score)
-    title_plot <- paste0("Sensitivity of ",substr(y_labels[i],1,nchar(y_labels[i])-3)," in the ",substr(y_labels[i],nchar(y_labels[i])-1,nchar(y_labels[i]))," (r2=",r2_value,")")
-  else
-    title_plot <- paste0("Sensitivity of ",substr(y_labels[i],1,nchar(y_labels[i])-3)," in the ",substr(y_labels[i],nchar(y_labels[i])-1,nchar(y_labels[i]))," (MSE=",r2_value,")")
+  if(r2score){
+    title_plot <- paste0("Sensitivity of ",
+                         substr(y_labels[i],1,nchar(y_labels[i])-3)," in the ",
+                         substr(y_labels[i],nchar(y_labels[i])-1,
+                                nchar(y_labels[i]))," (r2=",r2_value,")")
+  }
+  else{
+    title_plot <- paste0("Sensitivity of ",
+                         substr(y_labels[i],1,nchar(y_labels[i])-3)," in the ",
+                         substr(y_labels[i],nchar(y_labels[i])-1,
+                                nchar(y_labels[i]))," (MSE=",r2_value,")")
+  }
   
-  png(paste0('/home/crg17/Pictures/GSA_',GP_folder,'_',y_labels[i],'.png'),width=1600,height=1000,res=100)
+  png(paste0('/home/crg17/Pictures/GSA_',GP_folder,'_',y_labels[i],'.png'),
+      width=1600,height=1000,res=100)
   
   treemap(all_effects_df,
           
@@ -1059,21 +1174,34 @@ Plot_GSA_tree <- function(GP_folder,r2score=TRUE,flag_debugging = FALSE){
 #' uses the MSE.
 #' @param show_MSE If TRUE, it creates a row with the values of the MSE/r2score.
 #' @param flag_return If TRUE, it also returns the matrix.
+#' @param flag_debugging If TRUE, prints whatever is reading and writing
 
-Plot_GSA_table <- function(GP_folder,ventricle,MSE_flag=TRUE,show_MSE=TRUE,flag_return=FALSE){
+Plot_GSA_table <- function(GP_folder,ventricle,MSE_flag=TRUE,show_MSE=TRUE,
+                           flag_return=FALSE, flag_debugging = FALSE){
   
-  y_labels_original <- read.table(paste0("/data/PCA_GP/",GP_folder,"/y_labels.txt"),
-                                  quote="\"", comment.char="", as.is = TRUE)
+  source("./common_functions.R")
+  
+  y_labels_original <- Read_table(paste0("/data/PCA_GP/",GP_folder,
+                                         "/y_labels.txt"),
+                                  quote="\"", comment.char="", as.is = TRUE,
+                                  flag_debugging = flag_debugging)
   y_labels_original <- y_labels_original$V1
   
-  if(MSE_flag)
-    MSE_values <- read.table(paste0("/data/PCA_GP/",GP_folder,"/mse_scores.txt"), quote = "\"", comment.char = "")
-  else
-    MSE_values <- read.table(paste0("/data/PCA_GP/",GP_folder,"/r2scores.txt"), quote = "\"", comment.char = "")
+  if(MSE_flag){
+    MSE_values <- Read_table(paste0("/data/PCA_GP/",GP_folder,
+                                    "/mse_scores.txt"), quote = "\"",
+                             comment.char = "", flag_debugging = flag_debugging)
+  }
+  else{
+    MSE_values <- Read_table(paste0("/data/PCA_GP/",GP_folder,"/r2scores.txt"),
+                             quote = "\"", comment.char = "",
+                             flag_debugging = flag_debugging)
+  }
   
   MSE_values <- MSE_values$V1
   
-  MSE_split <- split(MSE_values, ceiling(seq_along(MSE_values)/round(length(MSE_values)/length(y_labels_original))))
+  MSE_split <- split(MSE_values,
+                     ceiling(seq_along(MSE_values)/round(length(MSE_values)/length(y_labels_original))))
   MSE_matrix<-as.matrix(as.data.frame(MSE_split))
   
   if(MSE_flag)
@@ -1081,8 +1209,10 @@ Plot_GSA_table <- function(GP_folder,ventricle,MSE_flag=TRUE,show_MSE=TRUE,flag_
   else
     final_MSE <- as.vector(apply(MSE_matrix, 2, max))
   
-  idx <- which(as.vector(sapply(y_labels_original,function(x) substr(x,nchar(x)-1,nchar(x)))) == ventricle)
-  y_labels <- as.vector(sapply(y_labels_original[idx],function(x) substr(x,1,nchar(x)-3)))
+  idx <- which(as.vector(sapply(y_labels_original,
+                                function(x) substr(x,nchar(x)-1,nchar(x)))) == ventricle)
+  y_labels <- as.vector(sapply(y_labels_original[idx],
+                               function(x) substr(x,1,nchar(x)-3)))
   final_MSE <- final_MSE[idx]
   
   all_effects_df <- as.data.frame(matrix(nrow=20,ncol=length(y_labels)))
@@ -1096,8 +1226,12 @@ Plot_GSA_table <- function(GP_folder,ventricle,MSE_flag=TRUE,show_MSE=TRUE,flag_
   
   for(i in 1:length(idx)){
     
-    fo_effects <- read.table(paste0("/data/PCA_GP/",GP_folder,"/",idx[i]-1,"/Si.txt"), quote="\"", comment.char="")
-    total_effects <- read.table(paste0("/data/PCA_GP/",GP_folder,"/",idx[i]-1,"/STi.txt"),quote="\"",comment.char = "")
+    fo_effects <- Read_table(paste0("/data/PCA_GP/",GP_folder,"/",idx[i]-1,
+                                    "/Si.txt"), quote="\"", comment.char="",
+                             flag_debugging = flag_debugging)
+    total_effects <- Read_table(paste0("/data/PCA_GP/",GP_folder,"/",idx[i]-1,
+                                       "/STi.txt"),quote="\"",comment.char = "",
+                                flag_debugging = flag_debugging)
     
     all_effects_df[1,i] <- 0
     all_effects_df[2:19,i] <- apply(fo_effects,2,function(x) max(0,mean(x)))
@@ -1112,27 +1246,6 @@ Plot_GSA_table <- function(GP_folder,ventricle,MSE_flag=TRUE,show_MSE=TRUE,flag_
   
   png(paste0('/home/crg17/Pictures/GSA_',ventricle,'_',GP_folder,'.png'),
       width=1800,height=1500,res=100)
-  
-  # cex_value = 3
-  # corrplot(as.matrix(all_effects_df),
-  #          "square",
-  #          p.mat = MSE_matrix,
-  #          insig = "p-value",
-  #          sig.level = min(MSE_matrix[1,])/2,
-  #          mar=c(0,0,8,0),
-  #          tl.cex=cex_value,
-  #          cl.cex=cex_value,
-  #          number.cex = 10,
-  #          cl.lim = c(0,1),
-  #          cl.ratio = 0.3,
-  #          tl.col="red",
-  #          tl.srt=60,
-  #          is.corr = FALSE)
-  # mtext(paste0("Variance explained by each one of the modes \nusing Gaussian processes in the ",ventricle),
-  #       side=3,
-  #       cex=cex_value+1,
-  #       line=-3,
-  #       at=7)
   
   cex_value <- 3
   mag.factor <- 1.3
